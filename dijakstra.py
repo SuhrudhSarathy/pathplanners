@@ -1,7 +1,8 @@
 import matplotlib.pyplot as plt 
 import numpy as np 
 import math
-import random 
+import random
+import time
 
 obst_prob = 0.60
 
@@ -15,7 +16,7 @@ class Node():
         self.isObstacle = isObstacle
 
 node_list = []
-goal = Node(24, 20, False)
+goal = Node(17, 23, False)
 
 
 def make_nodes(i, j):
@@ -29,6 +30,7 @@ def make_nodes(i, j):
             node_list.append(node)
     node_list.pop(0)
 def _start_dijakstra(node_list, path):
+    time1 = time.time()
     node_list = [node for node in node_list if node.isObstacle == False]
     while len(node_list) != 0:
         node_list = sorted(node_list, key=lambda x: x.distance)
@@ -44,6 +46,8 @@ def _start_dijakstra(node_list, path):
                 node.parent = current
                 if node not in path:
                     path.append(node)
+    time2 = time.time()
+    print(time2 - time1)
     print('Done')
 
 def get_path(path, goal):
@@ -78,11 +82,11 @@ path.append(start)
 _start_dijakstra(node_list, path)
 path = path[1:]
 path_planned = get_path(path, goal)
-for node in path:
+'''for node in path:
     print("Node.x, Node.y",(node.x, node.y))
     print("Node.distance", node.distance)
     print("Node.parent.coord", (node.parent.x, node.parent.y))
-    print("----------")
+    print("----------")'''
 x = [n.x for n in node_list]
 y = [n.y for n in node_list]
 x_obst = [n.x for n in node_list if n.isObstacle == True]
