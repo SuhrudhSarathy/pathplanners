@@ -50,6 +50,7 @@ def _startA_star(node_list, path, goal):
         #print(adjacent_nodes)
         #print('1')
         if current.x == goal.x and current.y == goal.y:
+            print(current.x, current.y ,current.parent)
             print("Reached Goal")
             break
         else:
@@ -61,6 +62,7 @@ def _startA_star(node_list, path, goal):
                     node.parent = current
                     #print('inside first if')
                     if node not in path:
+                        print(current.x, current.y, node.x, node.y)
                         path.append(node)
                         #print('node appended')
             #print('end of for loop')
@@ -81,8 +83,8 @@ def get_path(path, goal):
     return path_planned
                     
 
-goal = Node(47, 23, False)
-make_nodes(50, 50)
+goal = Node(4, 3, False)
+make_nodes(10, 10)
 start = Node(0, 0, False)
 start.distance = 0
 start.hueristic = start.distance + np.sqrt((start.x - goal.x)**2 + (start.y - goal.y)**2)
