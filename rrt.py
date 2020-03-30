@@ -1,10 +1,9 @@
+
 import matplotlib.pyplot as plt 
 import numpy as np 
 from shapely.geometry import Point, LineString, Polygon
 import random
-from sklearn.neighbors import KDTree
-
-## make a KD Tree to store path
+import time
 
 
 
@@ -83,9 +82,11 @@ class RRT():
         self.is_reached = False
         self.max_iter = max_iter
         self.goal_sample_rate = 0.1
+        self.obstacle_list = obstacle_list
 
     def _start_tree(self):
         self.nodes.append(self.start)
+        #time1 = time.time()
         while self.max_iter > 0:
             new_node = self.generate_random_node()
             #print((new_node.x, new_node.y))
@@ -96,14 +97,14 @@ class RRT():
             for node in self.nodes:
                 node.distance = 0 
             if distance(nearby_node, new_node) <= self.threshold:
-                if collisionCheck(nearby_node, new_node, obstacle_list) == False:
+                if collisionCheck(nearby_node, new_node, self.obstacle_list) == False:
                     new_node.parent = nearby_node
                     self.nodes.append(new_node)
                 else : 
                     pass
             else:
                 new_node = new_vector(nearby_node, new_node, self.threshold)
-                if collisionCheck(new_node, nearby_node, obstacle_list) == False:
+                if collisionCheck(new_node, nearby_node, self.obstacle_list) == False:
                     new_node.parent = nearby_node
                     self.nodes.append(new_node)
                 else :
@@ -127,16 +128,22 @@ class RRT():
         else:
             new_node = self.goal
         return new_node
-if __name__ == '__main__': 
-    obstacle_list = generate_random_map(100)
-    '''obstacle_list = obstacles()
-    for obstacle in obstacle_list:
-        plot_obstacle(obstacle)'''
-    start = Node(0, 0)
-    start.parent = start
-    rrt = RRT(start, Node(10,10), 0.9, obstacle_list, 1000)
-    rrt._start_tree()
-    rrt.plot_points()
-    plt.show()
+    
+    def get_path(self):
+        self._start_tree()
+        path = [self.nodes[-1]]
+        current = self.nodes[-1]
+        while True:
+            if current.x == self.start.x and current.y == self.start.y:
+                path.append(current)
+                break
+            else:
+                path.append(current.parent)
+                current = current.parent
+        path_planned = [(p.x, p.y) for p in path]
+        return path_planned
+
+
+    
     
 

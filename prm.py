@@ -14,18 +14,18 @@ def get_n_neighbors(node_list, n, point):
     return n_neighbors
 
 def obstacles():
-    poly1 = Polygon([(2, 2), (3, 2), (4, 5), (5, 6), (6, 4)])
-    poly2 = Polygon([(8, 8), (8, 6), (6, 6), (6, 8)])
-    poly3 = Polygon([(3, 4), (3, 5), (4, 5), (4, 3)])
-    cirlce1 = Point(8, 3).buffer(1)
+    poly1 = Polygon([(2, 10), (7, 10), (7, 1), (6, 1), (6, 6), (4, 6), (4, 9), (2, 9)])
+    poly2 = Polygon([(4, 0), (4, 5), (5, 5), (5, 0)])
+    poly3 = Polygon([(8, 2), (8, 7), (10, 7), (10, 2)])
+    '''cirlce1 = Point(8, 3).buffer(1)
     circle2 = Point(2, 7).buffer(1.5)
     poly4 = Polygon([(11, 10), (11, 13), (12, 13.75), (13, 12)])
     circle3 = Point(10, 1).buffer(0.75)
     circle4 = Point(11, 1.2).buffer(0.86)
     circle5 = Point(5, 15).buffer(1)
     circle6 = Point(4, 10).buffer(1)
-    circle7 = Point(5, 10.7).buffer(1)
-    obstacle_list = [poly1, poly2, poly3, cirlce1, circle2, circle4, circle5, poly4, circle3, circle6, circle7]
+    circle7 = Point(5, 10.7).buffer(1)'''
+    obstacle_list = [poly1, poly2, poly3]
     return obstacle_list
 
 def plot_obstacle(obstacle):
@@ -47,8 +47,8 @@ class Node():
 
 def generate_nodes(nodes): 
     while nodes > 0 :
-        x = random.random() * 15
-        y = random.random() * 15
+        x = random.random() * 10
+        y = random.random() * 10
         point = Point(x, y)
         for obstacle in obstacles():
             if obstacle.contains(point):
@@ -81,7 +81,7 @@ def make_roadmap(node_list, obstacle_list):
         node_list2 = [node2 for node2 in node_list if node2 != node]        
         for node2 in node_list2:
            if collisionCheck(node, node2, obstacle_list) == False:
-               node.connections.append(node)
+               node.connections.append(node2)
                
 def plot_roadmaps(node_list, obstacle_list):
     for node in node_list:
@@ -130,14 +130,14 @@ def get_path(path, goal):
 
 if __name__ == '__main__':
     start = Node(0, 0)
-    goal = Node(7, 8.5)
+    goal = Node(10, 10)
     start.distance = 0
     start.hueristic = start.distance + np.sqrt((start.x - goal.x)**2 + (start.y - goal.y)**2)    
     path = []
     obstacle_list = obstacles()
     for obstacle in obstacle_list:
         plot_obstacle(obstacle)
-    nodes = 10
+    nodes = 60
     node_list = []
     generate_nodes(nodes)
     make_roadmap(node_list, obstacle_list)
