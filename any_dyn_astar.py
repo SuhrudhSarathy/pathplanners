@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from shapely.geometry import Point, LineString, Polygon
 import random as rn 
+from functools import cmp_to_key
 
 # Constants
 obst_prob = 0.75
@@ -31,9 +32,10 @@ class Node():
             self.polygon = Polygon(self.coords)
         
         # Parameters used in ADA-star algorithm
-        self.g_value = np.Infinity
-        self.rhs_value = None
+        self.g = np.Infinity
+        self.rhs = None
         self.succesors = []
+        self.predecessors = []
         self.succesor = None
         self.predecessor = None
         self.keys = []
@@ -87,13 +89,14 @@ class Map():
         plt.scatter([self.start.x, self.goal.x], [self.start.y, self.goal.y], color='green')
 
 
-class Dstar():
+class ADAstar():
     '''
-        Implementation of  D star Lite algorithm
+        Implementation of  Anytime Dynamic A-star
     '''
     def __init__(self, start, goal):
         self.start = start
         self.goal = goal
+        self.epsilon = 2.5
         self.OPEN = []
         self.CLOSED = []
         self.INCONS = []
@@ -106,40 +109,95 @@ class Dstar():
         
         return cost
     
-    def g_value(self, state):
+    def g(self, state):
         '''
-            g_value is the cost of the present state to goal state
+            g is the cost of the present state to goal state
         '''
-        g_value = self.cost(state, self.goal)
+        g = self.cost(state, self.goal)
 
-        return g_value
+        return g
 
-    def rhs_value(self, state):
+    def rhs(self, state):
         '''
             One-Step-LookAheadCost
         '''    
         if state.x == self.goal.x and state.y == self.goal.y:
             rhs = 0
         else:
-            for successor in state.succesors:
-                successor.rhs_value = self.cost(state, successor) + successor.g_value
-            state.successors = state.successors.sorted(state.succesors, key=lambda successor: successor.rhs_value)
-            rhs = state.succesors.rhs_value
-            state.successor = state.succesors[0]
-        
+            s_dash = sorted(state.successors, key=lambda successor: self.cost(state, successor) + successor.g)[0]
+            rhs = self.cost(state, s_dash) + s_dash.g
         return rhs
     
-    def hueristic(self, state):
+    def hueristic(self, state1, state2):
         '''
             Use manhattan distance as Hueristic
         '''
-        hueristic = abs(state.x - self.goal.x) + abs(state.y - self.goal.y)
+        hueristic = abs(state1.x - state2.x) + abs(state1.y - state2.y)
 
         return hueristic
 
     def keys(self, s):
-        s.keys = [min(self.g_value(s), self.rhs_value(s)+self.hueristic(s)),
-                        min(self.g_value(s), self.rhs_value(s))]
+        '''
+            Returns key(s) function as mentioned in the algorithm
+        '''
+
+        if self.g(s) > self.rhs(s):
+            keys = [self.rhs(s) + self.epsilon * self.hueristic(self.start, s), self.rhs(s)]
+        else:
+            keys = [self.g(s) + self.hueristic(self.start, s), self.g(s)]
+
+        return keys
+
+    def compare_keys(self, s1, s2):
+        '''
+            Comparision function for 
+        '''
+
+        if s1.keys[0] < s2.keys[0] or (s1.keys[0] == s2.keys[0] and s1.keys[1] < s2.keys[1]):
+            return 1
+        elif s1.keys[0] == s2.keys[0] and s1.keys[1] == s2.keys[1]:
+            return 0
+        else :
+            return -1
+
+    def sort_open_based_on_keys(self):
+
+        # change this based on version of python
+        # refer to https://stackoverflow.com/questions/5213033/sort-a-list-of-lists-with-a-custom-compare-function/46320068#46320068
+
+        self.OPEN = sorted(self.OPEN, key = cmp_to_key(lambda state1, state2: self.compare_keys(state1, state2)))
+
+    def update_state(self, s):
+        s.rhs = self.rhs(s)
+        if s in self.OPEN :
+            self.OPEN.remove(s)
+        if s.g != s.rhs:
+            if s not in self.CLOSED:
+                s.keys = self.keys(s)
+                self.OPEN.append(s)
+            else:
+                self.INCONS.append(s)
+
+    def cip(self):
+        '''
+            cip == Compare or Improve Path
+        '''
+        self.sort_open_based_on_keys()
+        while self.compare_keys(self.OPEN[0], self.start) == 1 or self.start.rhs != self.start.g:
+            self.sort_open_based_on_keys()
+            s = self.OPEN[0]
+            self.OPEN.remove(s)
+            if s.g > s.rhs:
+                s.g = s.rhs
+                self.CLOSED.append(s)
+                for s_dash in s.predecessors:
+                    self.update_state(s_dash)
+            else:
+                s.g = np.Infinity
+                s.predecessors.append(s)
+                for s_dash in s.predecessors:
+                    self.update_state(s_dash)
+
 
 
 
