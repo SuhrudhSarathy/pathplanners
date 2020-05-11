@@ -4,9 +4,10 @@ import matplotlib.pyplot as plt
 from shapely.geometry import Point, LineString, Polygon
 import random as rn 
 from functools import cmp_to_key
+import sys
 
 # Constants
-obst_prob = 0.75
+obst_prob = 0.85
 
 class Node():
 
@@ -34,9 +35,9 @@ class Node():
         # Parameters used in ADA-star algorithm
         self.g = np.Infinity
         self.rhs = None
-        self.succesors = []
+        self.successors = []
         self.predecessors = []
-        self.succesor = None
+        self.successor = None
         self.predecessor = None
         self.keys = []
 
@@ -58,6 +59,7 @@ class Map():
             3. Nodes
             4. Obstacale Data
             5. Path
+        Graph made by such an algorithm is undirectional
     '''
     def __init__(self, start, goal):
         self.start = start
@@ -72,7 +74,7 @@ class Map():
 
         for x in X:
             for y in Y:
-                if (x == self.goal.x and y == self.goal.y) or (x == self.goal.x and y == self.goal.y):
+                if (x == self.goal.x and y == self.goal.y) or (x == self.start.x and y == self.start.y):
                     continue 
                 else:
                     prob = rn.random()
@@ -93,13 +95,28 @@ class ADAstar():
     '''
         Implementation of  Anytime Dynamic A-star
     '''
-    def __init__(self, start, goal):
+    def __init__(self, start, goal, nodes):
         self.start = start
         self.goal = goal
         self.epsilon = 2.5
+        self.nodes = nodes
         self.OPEN = []
         self.CLOSED = []
         self.INCONS = []
+        self.set_preds_and_succs()
+
+    def set_preds_and_succs(self):
+        self.nodes.append(self.start)
+        self.nodes.append(self.goal)
+        for s in self.nodes:
+            for node in self.nodes:
+                if np.sqrt((node.x - s.x) ** 2 + (node.y - s.y) ** 2) == 1:
+                    s.successors.append(node)
+            s.predecessors = s.successors
+            if len(s.successors) ==0:
+                print('unable to find connections. Abandon Planning')
+                break
+
 
     def cost(self, state1, state2):
         '''
@@ -117,16 +134,24 @@ class ADAstar():
 
         return g
 
-    def rhs(self, state):
+    def rhs(self, state, request=False):
         '''
             One-Step-LookAheadCost
         '''    
         if state.x == self.goal.x and state.y == self.goal.y:
-            rhs = 0
+            return  0
         else:
-            s_dash = sorted(state.successors, key=lambda successor: self.cost(state, successor) + successor.g)[0]
-            rhs = self.cost(state, s_dash) + s_dash.g
-        return rhs
+            try:
+                s_dash = sorted(state.successors, key=lambda successor: self.cost(state, successor) + successor.g)[0]
+                #print(s_dash.x, s_dash.y)
+                rhs = self.cost(state, s_dash) + s_dash.g
+                if request == True:
+                    return rhs, s_dash
+                else:
+                    return rhs
+            except:
+                pass
+
     
     def hueristic(self, state1, state2):
         '''
@@ -154,11 +179,11 @@ class ADAstar():
         '''
 
         if s1.keys[0] < s2.keys[0] or (s1.keys[0] == s2.keys[0] and s1.keys[1] < s2.keys[1]):
-            return 1
+            return -1
         elif s1.keys[0] == s2.keys[0] and s1.keys[1] == s2.keys[1]:
             return 0
         else :
-            return -1
+            return 1
 
     def sort_open_based_on_keys(self):
 
@@ -169,6 +194,11 @@ class ADAstar():
 
     def update_state(self, s):
         s.rhs = self.rhs(s)
+        if s != self.goal:
+            s.rhs, s_dash = self.rhs(s, True)
+            s.predecessor = s_dash
+            s_dash.successor = s
+
         if s in self.OPEN :
             self.OPEN.remove(s)
         if s.g != s.rhs:
@@ -184,6 +214,7 @@ class ADAstar():
         '''
         self.sort_open_based_on_keys()
         while self.compare_keys(self.OPEN[0], self.start) == 1 or self.start.rhs != self.start.g:
+            print('inside loop')
             self.sort_open_based_on_keys()
             s = self.OPEN[0]
             self.OPEN.remove(s)
@@ -197,17 +228,69 @@ class ADAstar():
                 s.predecessors.append(s)
                 for s_dash in s.predecessors:
                     self.update_state(s_dash)
+                s.predecessors.remove(s)
+            if len(self.OPEN) == 0:
+                return
+
+    def get_path(self):
+        current = self.start
+        self.path = [current]
+        while current != self.goal:
+            current = sorted(current.successors, key=lambda node: node.rhs)[0]
+            self.path.append(current)
+            print(current.x, current.y, current.rhs)
+
+    def plot_path(self):
+        x = [p.x for p in self.path]
+        y = [p.y for p in self.path]
+
+        plt.plot(x, y, color='green')
+
+    def main(self):
+        '''
+            Main function
+        '''
+        try:
+            self.start.g = np.Infinity
+            self.start.rhs = np.Infinity 
+            self.goal.s = np.Infinity
+            self.goal.rhs = 0
+            self.nodes.append(self.start)
+            self.nodes.append(self.goal)
+            self.epsilon = 2.5
+            self.OPEN, self.CLOSED, self.INCONS = [], [], []
+            self.start.keys = self.keys(self.start)
+            self.goal.keys = self.keys(self.goal)
+            self.OPEN.append(self.goal)
+            self.cip()
+            self.get_path()
+            self.plot_path()
+        except Exception as err:
+            print(err)
+            print('Either the bot is surrounded by obstacles or the goal')
+            print('---Abandon Planning---')
+        
+        
+        
 
 
 
 
 if __name__ == '__main__':
     start = Node(0.5, 0.5)
-    goal = Node(7.5, 9.5)
+    goal = Node(8.5, 7.5)
 
     map = Map(start, goal)
     map.init_map()
+
+  
+
+    planner = ADAstar(start, goal, map.nodes)
+    planner.main()
+
     map.plot_map()
+
+    
     plt.show()
 
         
