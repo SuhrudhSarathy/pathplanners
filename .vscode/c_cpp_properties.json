@@ -1,0 +1,52 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "",
+        "limitSymbolsToIncludedHeaders": true
+      },
+      "includePath": [
+        "/home/suhrudh/Documents/trotbot_ws/devel/include/**",
+        "/home/suhrudh/catkin_ws/devel/include/**",
+        "/opt/ros/melodic/include/**",
+        "/home/suhrudh/catkin_ws/src/bebop_autonomy/bebop_driver/include/**",
+        "/home/suhrudh/catkin_ws/src/BebopS/include/**",
+        "/home/suhrudh/catkin_ws/src/champ/champ/include/**",
+        "/home/suhrudh/catkin_ws/src/champ/champ_base/include/**",
+        "/home/suhrudh/catkin_ws/src/champ/champ_config/include/**",
+        "/home/suhrudh/Documents/trotbot_ws/src/navigation/controller/include/**",
+        "/home/suhrudh/catkin_ws/src/darknet_ros/darknet_ros/include/**",
+        "/home/suhrudh/catkin_ws/src/drone_navigation/include/**",
+        "/home/suhrudh/catkin_ws/src/drone_sim/include/**",
+        "/home/suhrudh/catkin_ws/src/eigen_checks/include/**",
+        "/home/suhrudh/catkin_ws/src/mavros/libmavconn/include/**",
+        "/home/suhrudh/catkin_ws/src/mav_comm/mav_msgs/include/**",
+        "/home/suhrudh/catkin_ws/src/mav_comm/mav_planning_msgs/include/**",
+        "/home/suhrudh/catkin_ws/src/mav_trajectory_generation/mav_trajectory_generation/include/**",
+        "/home/suhrudh/catkin_ws/src/mav_trajectory_generation/mav_trajectory_generation_example/include/**",
+        "/home/suhrudh/catkin_ws/src/mav_trajectory_generation/mav_trajectory_generation_ros/include/**",
+        "/home/suhrudh/catkin_ws/src/mav_trajectory_generation/mav_visualization/include/**",
+        "/home/suhrudh/catkin_ws/src/mavros/mavros/include/**",
+        "/home/suhrudh/catkin_ws/src/mavros/mavros_msgs/include/**",
+        "/home/suhrudh/catkin_ws/src/minkindr/minkindr/include/**",
+        "/home/suhrudh/catkin_ws/src/minkindr_ros/minkindr_conversions/include/**",
+        "/home/suhrudh/catkin_ws/src/nlopt/include/**",
+        "/home/suhrudh/catkin_ws/src/numpy_eigen/include/**",
+        "/home/suhrudh/Documents/trotbot_ws/src/navigation/obst_detect/include/**",
+        "/home/suhrudh/catkin_ws/src/omnibase/omnibase_control/include/**",
+        "/home/suhrudh/Documents/trotbot_ws/src/navigation/planner/include/**",
+        "/home/suhrudh/Documents/trotbot_ws/src/navigation/planner_msgs/include/**",
+        "/home/suhrudh/catkin_ws/src/CrazyS/rotors_control/include/**",
+        "/home/suhrudh/catkin_ws/src/CrazyS/rotors_gazebo/include/**",
+        "/home/suhrudh/catkin_ws/src/CrazyS/rotors_gazebo_plugins/include/**",
+        "/home/suhrudh/catkin_ws/src/CrazyS/rotors_joy_interface/include/**",
+        "/home/suhrudh/catkin_ws/src/mavros/test_mavros/include/**",
+        "/home/suhrudh/catkin_ws/src/voxblox/voxblox/include/**",
+        "/home/suhrudh/catkin_ws/src/voxblox/voxblox_ros/include/**",
+        "/home/suhrudh/catkin_ws/src/voxblox/voxblox_rviz_plugin/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS"
+    }
+  ]
+}
