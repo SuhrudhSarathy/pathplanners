@@ -41,6 +41,8 @@ class Obstacle:
                 self.obj.centroid.x, self.obj.centroid.y
             )
         )
+
+
 class ContinousWorld:
     """Basic World for continous planning algorithms
     Args:
@@ -48,7 +50,7 @@ class ContinousWorld:
         Y : Maximum length of the World
         obstacle_level (0 to 1) : level of obstacles
         obst_type : list of strings. Supported "circles" and "boxes"
-        start : start position for planning. Default = [0, 0], 
+        start : start position for planning. Default = [0, 0],
                 can be set to None for using the same environment for multiple planning episodes
         goal  : goal position for planning. Default = [0, 0]
                 can be set to None for using the same environement for multiple planning episodes
@@ -90,8 +92,16 @@ class ContinousWorld:
 
     def make_obstacles(self):
         if self.start and self.goal is not None:
-            X = [i for i in range(0, self.X - 1) if i not in [self.start[0], self.goal[0]]]
-            Y = [i for i in range(0, self.Y - 1) if i not in [self.start[1], self.goal[1]]]
+            X = [
+                i
+                for i in range(0, self.X - 1)
+                if i not in [self.start[0], self.goal[0]]
+            ]
+            Y = [
+                i
+                for i in range(0, self.Y - 1)
+                if i not in [self.start[1], self.goal[1]]
+            ]
         else:
             X = [i for i in range(0, self.X)]
             Y = [i for i in range(0, self.Y)]
@@ -122,6 +132,7 @@ class ContinousWorld:
                 self.obstacles.append(
                     Obstacle(Point(x, y).buffer(np.random.uniform(0.5, 1.5)), "circle")
                 )
+
     # --- Plotting functions
     def plot_obstacles(self):
         for obst in self.obstacles:
@@ -139,8 +150,12 @@ class ContinousWorld:
             )
 
     def plot_path(self, path):
-        self.ax.scatter([p[0] for p in path], [p[1] for p in path], color="r", marker="x")
-        self.ax.plot([p[0] for p in path], [p[1] for p in path], color="green", alpha=0.75)
+        self.ax.scatter(
+            [p[0] for p in path], [p[1] for p in path], color="r", marker="x"
+        )
+        self.ax.plot(
+            [p[0] for p in path], [p[1] for p in path], color="green", alpha=0.75
+        )
         plt.show()
 
     def plot_world(self, path=None):
@@ -162,9 +177,3 @@ class ContinousWorld:
                 return True
         # else
         return False
-
-if __name__ == "__main__":
-    world = ContinousWorld(obstacle_level=0.05)
-    path = [[0, 0], [-1, 2], [3, 4], [7, 6]]
-    world.plot_world(path=path)
-    plt.show()

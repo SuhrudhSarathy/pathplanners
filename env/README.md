@@ -26,5 +26,27 @@ The methods of the GridWorld class can be broadly divided into four categories.
 #### 4. Plotting Functions
 - `plot_obstacles`  :   Plots obstacles in the world.
 - `plot_points`     :   Plots points(nodes).
+- `plot_start_and_goal` :   Plots the start and goal of the world.
+- `plot_path`       :   Plots a given path.
+- `plot_world`      : Plots the whole world. Also plots the path if given.
+
+## Continous World
+Basic implementation of a world without grids.
+### Features
+1. Uses Shapely for collision checking.
+2. Contains functions for plotting the world.
+
+### API
+The methods of the ContinousWorld class can be broadly divided into three categories.
+#### 1. Making the Environment
+- `make_obstacles`  :   Makes the obstacles based on parameter `obstacle_level`. Supports `Box` type and `Circle` type obstacles.
+
+#### 2. Collision Checking
+- `check_collision_of_point`    :   Checks if the given point is within any obstacle.
+- `check_collision_of_path` :   Checks if the given path is in collision with the obstacles in the world.
+
+#### 3. Plotting Functions
+- `plot_obstacles`  :   Plots obstacles in the world.
 - `plot_start_and_goal` :   Plots the start and goal of the world
 - `plot_path`       :   Plots a given path
+- `plot_world`      : Plots the whole world. Also plots the path if given.

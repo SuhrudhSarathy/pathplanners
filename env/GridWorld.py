@@ -125,6 +125,7 @@ class GridWorld:
                 self.obstacles.append(
                     Obstacle(Point(x, y).buffer(np.random.uniform(0.5, 1.5)), "circle")
                 )
+
     def make_nodes(self):
         # make all the nodes and store them in a KDTree
         self.nodes = []
@@ -157,7 +158,12 @@ class GridWorld:
         )
 
     def plot_path(self, path):
-        self.ax.plot([p[0] for p in path], [p[1] for p in path])
+        self.ax.scatter(
+            [p[0] for p in path], [p[1] for p in path], color="r", marker="x"
+        )
+        self.ax.plot(
+            [p[0] for p in path], [p[1] for p in path], color="green", alpha=0.75
+        )
         plt.show()
 
     def plot_world(self, path=None):
@@ -224,5 +230,3 @@ class GridWorld:
             )
             inds = inds[0]
             return [Point(x[0], x[1]) for x in self.nodes[inds]], dis[0]
-
-    
