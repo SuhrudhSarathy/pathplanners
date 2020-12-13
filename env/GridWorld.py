@@ -125,6 +125,14 @@ class GridWorld:
                 self.obstacles.append(
                     Obstacle(Point(x, y).buffer(np.random.uniform(0.5, 1.5)), "circle")
                 )
+    def make_nodes(self):
+        # make all the nodes and store them in a KDTree
+        self.nodes = []
+        for x in np.arange(-2, self.X + 2, POINT_DIST):
+            for y in np.arange(-2, self.Y + 12, POINT_DIST):
+                self.nodes.append([x, y])
+        self.nodes = np.array(self.nodes)
+        self.tree = KDTree(self.nodes, leaf_size=2)
 
     # --- Plotting functions
     def plot_obstacles(self):
@@ -217,11 +225,4 @@ class GridWorld:
             inds = inds[0]
             return [Point(x[0], x[1]) for x in self.nodes[inds]], dis[0]
 
-    def make_nodes(self):
-        # make all the nodes and store them in a KDTree
-        self.nodes = []
-        for x in np.arange(-2, self.X + 2, POINT_DIST):
-            for y in np.arange(-2, self.Y + 12, POINT_DIST):
-                self.nodes.append([x, y])
-        self.nodes = np.array(self.nodes)
-        self.tree = KDTree(self.nodes, leaf_size=2)
+    
