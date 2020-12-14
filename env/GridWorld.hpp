@@ -1,7 +1,6 @@
 #ifndef GRIDWORLD_H
 #define GRIDWORLD_H
-#define BOX 1
-#define CIRCLE 2
+
 
 #include <iostream>
 #include <boost/geometry.hpp>
@@ -12,6 +11,9 @@
 #include <boost/geometry/geometries/adapted/c_array.hpp>
 #include <vector>
 #include <random>
+
+#define BOX 1
+#define CIRCLE 2
 
 BOOST_GEOMETRY_REGISTER_C_ARRAY_CS(cs::cartesian)
 BOOST_GEOMETRY_REGISTER_BOOST_TUPLE_CS(cs::cartesian)
@@ -136,6 +138,12 @@ class GridWorld{
             }
             //else
             return false;
+        }
+        void get_status(){
+            std::cout << "```GridWorld```" << std::endl;
+            std::cout << "X: " << X << "Y: " << Y << std::endl;
+            std::cout << "No. of Nodes: " << nodes.size() << std::endl;
+            std::cout << "No. of Obstacles: " << obstacles.size() << std::endl;
         }
         
     private:
