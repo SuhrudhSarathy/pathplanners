@@ -11,9 +11,13 @@
 #include <boost/geometry/geometries/adapted/c_array.hpp>
 #include <vector>
 #include <random>
+#include "../utils/combinedplotting.hpp"
 
 #define BOX 1
 #define CIRCLE 2
+#define PLOT_POINTS 1
+#define PLOT_START_AND_GOAL 0
+#define PLOT_OBSTACLES 1
 
 BOOST_GEOMETRY_REGISTER_C_ARRAY_CS(cs::cartesian)
 BOOST_GEOMETRY_REGISTER_BOOST_TUPLE_CS(cs::cartesian)
@@ -26,6 +30,8 @@ typedef model::linestring<Point> LineString;
 std::random_device rnd;
 std::mt19937 gen(rnd());
 std::uniform_real_distribution<float> dis(1.0, 2.5);
+
+namespace gridworld{
 
 class BoxObstacle{
     private:
@@ -145,6 +151,46 @@ class GridWorld{
             std::cout << "No. of Nodes: " << nodes.size() << std::endl;
             std::cout << "No. of Obstacles: " << obstacles.size() << std::endl;
         }
+
+        // Plotting functions
+        void plot_obstacles(){
+            for(auto obst: obstacles){
+                float x, y, width, height;
+                obst.get_params_of_polygon(x, y, width, height);
+                plot_box_obstacle(x, y, width, height);
+            }
+        }
+
+        void plot_points(){
+            for(auto node: nodes){
+                plot_point(node, "red");
+            }
+        }
+
+        void plot_start_and_goal(){
+            plot_point(start, "green");
+            plot_point(goal, "green");
+        }
+
+        void plot_path(LineString* path){
+            plot_linestring(path);
+        }
+
+        void plot_world(LineString* path = NULL){
+            // if path is not a null pointer
+            if(path){
+                plot_path(path);
+            }
+            if(PLOT_POINTS){
+                plot_points();
+            }
+            if(PLOT_START_AND_GOAL){
+                plot_start_and_goal();
+            }
+            if(PLOT_OBSTACLES){
+                plot_obstacles();
+            }
+        }
         
     private:
         float X = 10;
@@ -155,4 +201,5 @@ class GridWorld{
         std::vector<BoxObstacle> obstacles;
         Point start, goal;
 };
+} // namespace gridworld
 #endif
