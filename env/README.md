@@ -3,7 +3,7 @@ An implementation of environments for simulating the action of path planning alg
 Presently consists of a world with fixed grids, which can be used for grid-based path planning algorithms like A-star and Dijkstra's etc.
 
 ## GridWorld
-Basic implementation of a grid based world.
+Basic implementation of a grid based world. Use `GridWorld.py` for python implementation and use `GridWorld.hpp` as a header only alternative with the same API.
 ### Features
 1. Uses Shapely for collision checking.
 2. Stores the nodes in a KDTree data structure for faster and efficient search.
@@ -29,6 +29,18 @@ The methods of the GridWorld class can be broadly divided into four categories.
 - `plot_start_and_goal` :   Plots the start and goal of the world.
 - `plot_path`       :   Plots a given path.
 - `plot_world`      : Plots the whole world. Also plots the path if given.
+
+### Requirements
+#### 1. Python
+The python version requires the follwing modules
+1. Numpy
+2. MatPlotlib
+3. Descartes
+4. Scikit Learn
+5. Shapely
+
+#### 2. C++
+The C++ version(as of now, is limited, without any visualisation and nearest neigbour search) uses Boost Geometry for all the geometry related applications.
 
 ## Continous World
 Basic implementation of a world without grids.
