@@ -10,7 +10,6 @@
 #include <boost/geometry/geometries/adapted/c_array.hpp>
 #include <vector>
 
-#include "../env/GridWorld.hpp"
 #include "matplotlibcpp.h"
 
 namespace plt = matplotlibcpp;
