@@ -144,6 +144,4 @@ class RRT():
         return path_planned
 
 
-    
-    
 
